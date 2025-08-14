@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>HURRDURR</title>
+<style>
+body { margin:0; text-align:center; background:#fff; }
+.hurr-container img { width:200px; margin:5px; }
+.hurr-container { display:none; }
+#startBtn { font-size:24px; padding:20px; margin-top:100px; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<button id="startBtn">HURRDURR</button>
+
+<div class="hurr-container">
+    <img src="hurr.gif" alt="HURR">
+    <img src="durr.gif" alt="DURR">
+    <img src="hurrdurr.gif" alt="HURR-DURR">
+</div>
+
+<audio id="hurrAudio" src="hurr.mp3" loop></audio>
+
+<script>
+let popupWindow;
+
+function openPopup() {
+    popupWindow = window.open("", "HURR-DURR", "width=234,height=293,resizable=no");
+    if (!popupWindow) return;
+    popupWindow.document.write(`
+        <html><head><title>HURRDURR</title></head>
+        <body style="text-align:center;margin:0;background:#fff">
+        <img src="hurr.gif" width="200">
+        <img src="durr.gif" width="200">
+        <img src="hurrdurr.gif" width="200">
+        <audio src="hurr.mp3" autoplay loop></audio>
+        </body></html>
+    `);
+    popupWindow.document.close();
+
+    let left = 0, topPos = 0, dx = 4, dy = 4;
+    setInterval(() => {
+        if (!popupWindow || popupWindow.closed) return;
+        left += dx; topPos += dy;
+        if (left + 234 > screen.width || left < 0) dx = -dx;
+        if (topPos + 293 > screen.height || topPos < 0) dy = -dy;
+        popupWindow.moveTo(left, topPos);
+        popupWindow.focus();
+    }, 30);
+}
+
+document.getElementById('startBtn').addEventListener('click', () => {
+    // Show GIFs in main tab
+    document.querySelector('.hurr-container').style.display = 'block';
+
+    // Play music in main tab
+    document.getElementById('hurrAudio').play().catch(() => console.log("Autoplay blocked"));
+
+    // Open popup
+    openPopup();
+
+    // Reopen popup if closed
+    setInterval(() => {
+        if (!popupWindow || popupWindow.closed) {
+            openPopup();
+        }
+    }, 1000);
+
+    document.getElementById('startBtn').style.display = 'none';
+});
+
+// Alert loop on main tab close attempt
+window.addEventListener('beforeunload', function(e) {
+    let msg = "HURRDURR";
+    e.preventDefault();
+    e.returnValue = msg;
+    setTimeout(function loopAlerts() {
+        alert("HURRDURR");
+        setTimeout(loopAlerts, 0);
+    }, 0);
+});
+</script>
+
+</body>
+</html>
